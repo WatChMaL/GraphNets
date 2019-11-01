@@ -94,6 +94,9 @@ venv.bak/
 .spyderproject
 .spyproject
 
+# Vim files
+*.swp
+
 # Rope project settings
 .ropeproject
 
@@ -110,6 +113,7 @@ venv.bak/
 *.npz
 *.h5
 *.npy
+*.pkl
 
 # Training log and model state dump
 dumps/
