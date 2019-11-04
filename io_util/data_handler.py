@@ -91,3 +91,18 @@ class WCH5Dataset(Dataset):
 
     def __len__(self):
         return self.labels.shape[0]
+    
+def get_loaders(path, train_indices_file, val_indices_file, test_indices_file, edges_dict_pickle, batch_size):
+    
+    dataset = WCH5Dataset(path, train_indices_file, val_indices_file, test_indices_file, edges_dict_pickle)
+                          
+    train_loader=DataLoader(dataset, batch_size=batch_size, 
+                            pin_memory=True, sampler=SubsetRandomSampler(dataset.train_indices))
+
+    val_loader=DataLoader(dataset, batch_size=batch_size, 
+                            pin_memory=True, sampler=SubsetRandomSampler(dataset.val_indices))
+
+    test_loader=DataLoader(dataset, batch_size=batch_size, 
+                            pin_memory=True, sampler=SubsetRandomSampler(dataset.test_indices))
+    
+    return train_loader, val_loader, test_loader
