@@ -118,3 +118,4 @@ venv.bak/
 
 # Training log and model state dump
 dumps/
+metadata
