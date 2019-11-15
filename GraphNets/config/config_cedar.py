@@ -1,4 +1,4 @@
-# for commit d7139b7e969474c824cd04a2a550187 
+# for commit e54b672177b9a9afd8567bb57ce6 
 
 from config.easy_dict import EasyDict
 
@@ -19,6 +19,7 @@ config.device = 'gpu'
 config.gpu_list = [0]
 
 config.batch_size = 64
+config.validate_batch_size = 64
 config.lr=0.01
 config.weight_decay=5e-4
 
