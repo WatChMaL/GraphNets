@@ -10,9 +10,9 @@ config.data_path = "/home/jpeng/test_data/IWCDmPMT_4pi_fulltank_test_graphnet.h5
 config.train_indices_file = "/home/jpeng/test_data/IWCDmPMT_4pi_fulltank_test_splits/train.txt"
 config.val_indices_file = "/home/jpeng/test_data/IWCDmPMT_4pi_fulltank_test_splits/val.txt"
 config.test_indices_file = "/home/jpeng/test_data/IWCDmPMT_4pi_fulltank_test_splits/test.txt"
-config.edge_index_pickle = "/home/jpeng/graphnets/visualization/edges_dict.pkl"
+config.edge_index_pickle = "/home/jpeng/GraphNets/visualization/edges_dict.pkl"
 
-config.dump_path = "/home/jpeng/graphnets/dump/gcn"
+config.dump_path = "/home/jpeng/GraphNets/dump/gcn"
 
 config.num_data_workers = 0 # Sometime crashes if we do multiprocessing
 config.device = 'gpu'
