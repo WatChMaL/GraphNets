@@ -16,9 +16,11 @@ if __name__ == '__main__':
     # Training
     engine.train()
     
-    # Validation
-    engine.validate("test")
-
     # Save network
     engine.save_state()
+    
+    # Validation
+    engine.load_state(osp.join(engine.dirpath, config.model_name + "_best.pth"))
+    engine.validate("validation")
+
 

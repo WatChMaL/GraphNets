@@ -8,6 +8,9 @@ import torch
 import torch.nn.functional as F
 from torch.optim import Adam
 
+from torch_geometric.data import DataLoader
+
+from io_util.sampler import SubsetSequentialSampler
 from training_utils.engine import Engine
 from training_utils.logger import CSVData
 
@@ -147,32 +150,55 @@ class EngineGraph(Engine):
 
         print(message)
         
-        # Setup the CSV file for logging the output, path to save the actual and reconstructed events, dataloader iterator
+        # Setup the CSV file for logging the output
         if subset == "train":
             self.log=CSVData(self.dirpath + "train_validation_log.csv")
-            np_event_path=self.dirpath + "/train_valid_iteration_"
-            data_iter=self.train_loader
+            validate_indices = self.dataset.train_indices
         elif subset == "validation":
             self.log=CSVData(self.dirpath + "valid_validation_log.csv")
-            np_event_path=self.dirpath + "/val_valid_iteration_"
-            data_iter=self.val_loader
+            validate_indices = self.dataset.val_indices
         else:
             self.log=CSVData(self.dirpath + "test_validation_log.csv")
-            np_event_path=self.dirpath + "/test_validation_iteration_"
-            data_iter=self.test_loader
+            validate_indices = self.dataset.test_indices
 
-        save_arr_dict={"events": [], "labels": [], "energies": []}
-        
+        data_iter = DataLoader(self.dataset, batch_size=self.config.validate_batch_size, 
+                               num_workers=self.config.num_data_workers,
+                               pin_memory=True, sampler=SubsetSequentialSampler(validate_indices))
+
+        # Data format definition
+        headers = ["index", "label", "pred"]
+        for i in range(max(self.dataset.labels)+1):
+            headers.append("pred_val{}".format(i))
+
+        avg_loss = 0
+        avg_acc = 0
+        indices_iter = iter(validate_indices)
+
+        # Go through the data
         with torch.no_grad():
             for iteration, data in enumerate(data_iter):
-                data = data.to(self.device)
+
+                gpu_data = data.to(self.device)
 
                 stdout.write("Iteration : {}, Progress {} \n".format(iteration, iteration/len(data_iter)))
-                res=self.forward(data, mode="validation")
-                acc = res.argmax(1).eq(data.y).sum().item()/data.y.shape[0]
-                loss = self.criterion(res, data.y)
+                res=self.forward(gpu_data, mode="validation")
+
+                acc = res.argmax(1).eq(gpu_data.y).sum().item()
+                loss = self.criterion(res, gpu_data.y) * data.y.shape[0]
+                avg_acc += acc
+                avg_loss += loss
 
                 # Log/Report
-                self.log.record(["Iteration", "loss", "acc"], [iteration, loss, acc])
-                self.log.write()
+                for label, pred, preds in zip(data.y.tolist(), res.argmax(1).tolist(), res.exp().tolist()):
+                    output = [next(indices_iter), label, pred]
+                    for p in preds:
+                        output.append(p)
+                    self.log.record(headers, output)
+                    self.log.write()
+
+        avg_acc/=len(validate_indices)
+        avg_loss/=len(validate_indices)
+
+        stdout.write("Overall acc : {}, Overall loss : {}".format(avg_acc, avg_loss))
+        self.log.close()
 

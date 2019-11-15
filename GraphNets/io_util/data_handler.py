@@ -102,7 +102,4 @@ def get_loaders(path, train_indices_file, val_indices_file, test_indices_file, e
     val_loader=DataLoader(dataset, batch_size=batch_size, num_workers=workers,
                             pin_memory=True, sampler=SubsetRandomSampler(dataset.val_indices))
 
-    test_loader=DataLoader(dataset, batch_size=batch_size, num_workers=workers,
-                            pin_memory=True, sampler=SubsetRandomSampler(dataset.test_indices))
-    
-    return train_loader, val_loader, test_loader
+    return train_loader, val_loader, dataset

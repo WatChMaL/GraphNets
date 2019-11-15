@@ -24,6 +24,7 @@ class CSVData:
             self._str+='\n'
 
         self._fout.write(self._str.format(*(self._dict.values())))
+        self.flush()
 
     def flush(self):
         if self._fout: self._fout.flush()

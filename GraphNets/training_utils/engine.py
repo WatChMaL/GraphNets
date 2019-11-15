@@ -54,7 +54,7 @@ class Engine(ABC):
                       config.train_indices_file, config.val_indices_file, config.test_indices_file,   # Changed
                       config.edge_index_pickle, config.batch_size, config.num_data_workers)
 
-        self.train_loader, self.val_loader, self.test_loader = out
+        self.train_loader, self.val_loader, self.dataset = out
         # Define the variant dependent attributes
         self.criterion=None
 

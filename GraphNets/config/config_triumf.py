@@ -19,6 +19,7 @@ config.device = 'gpu'
 config.gpu_list = [0]
 
 config.batch_size = 64
+config.validate_batch_size = 64 
 config.lr=0.01
 config.weight_decay=5e-4
 
