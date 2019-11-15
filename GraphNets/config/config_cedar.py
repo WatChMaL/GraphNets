@@ -6,10 +6,10 @@ config = EasyDict()
 
 config.model_name = "gcn_kipf"
 
-config.data_path = "/project/rpp-tanaka-ab/wollip/data/IWCDmPMT_4pi_fulltank_9M_graphnet.h5"
-config.train_indices_file = "/project/rpp-tanaka-ab/wollip/data/IWCDmPMT_4pi_fulltank_9M_splits/train.txt"
-config.val_indices_file = "/project/rpp-tanaka-ab/wollip/data/IWCDmPMT_4pi_fulltank_9M_splits/val.txt"
-config.test_indices_file = "/project/rpp-tanaka-ab/wollip/data/IWCDmPMT_4pi_fulltank_9M_splits/test.txt"
+config.data_path = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_graphnet.h5"
+config.train_indices_file = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_splits/train.txt"
+config.val_indices_file = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_splits/val.txt"
+config.test_indices_file = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_splits/test.txt"
 config.edge_index_pickle = "/project/rpp-tanaka-ab/wollip/GraphNets/visualization/edges_dict.pkl"
 
 config.dump_path = "/project/rpp-tanaka-ab/wollip/GraphNets/dump/gcn"
