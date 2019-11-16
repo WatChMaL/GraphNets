@@ -64,12 +64,12 @@ class WCH5Dataset(Dataset):
         self.val_indices = self.load_indicies(validation_indices_file)
         self.test_indices = self.load_indicies(test_indices_file)
     
-    def load_indicies(self, indicies_file):
-        with open(indicies_file, 'r') as f:
+    def load_indices(self, indices_file):
+        with open(indices_file, 'r') as f:
             lines = f.readlines()
-        # indicies = [int(l.strip()) for l in lines if not l.isspace()]
-        indicies = [int(l.strip()) for l in lines]
-        return indicies
+        # indices = [int(l.strip()) for l in lines if not l.isspace()]
+        indices = [int(l.strip()) for l in lines]
+        return indices
     
     def load_edges(self, edge_index_pickle):
         edge_index = torch.zeros([self.nodes, self.nodes], dtype=torch.int64)
