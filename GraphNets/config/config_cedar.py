@@ -6,13 +6,13 @@ config = EasyDict()
 
 config.model_name = "gcn_kipf"
 
-config.data_path = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_graphnet.h5"
-config.train_indices_file = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_splits/train.txt"
-config.val_indices_file = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_splits/val.txt"
-config.test_indices_file = "/fast_scratch/data/IWCDmPMT_4pi_fulltank_9M_splits/test.txt"
-config.edge_index_pickle = "/project/rpp-tanaka-ab/wollip/GraphNets/visualization/edges_dict.pkl"
+config.data_path = "/fast_scratch/IWCDmPMT_4pi_fulltank_9M_graphnet.h5"
+config.train_indices_file = "/fast_scratch/IWCDmPMT_4pi_fulltank_9M_splits/train.txt"
+config.val_indices_file = "/fast_scratch/IWCDmPMT_4pi_fulltank_9M_splits/val.txt"
+config.test_indices_file = "/fast_scratch/IWCDmPMT_4pi_fulltank_9M_splits/test.txt"
+config.edge_index_pickle = "/project_dir/visualization/edges_dict.pkl"
 
-config.dump_path = "/project/rpp-tanaka-ab/wollip/GraphNets/dump/gcn"
+config.dump_path = "/project_dir/dump/gcn"
 
 config.num_data_workers = 0 # Sometime crashes if we do multiprocessing
 config.device = 'gpu'
