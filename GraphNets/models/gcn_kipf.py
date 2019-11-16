@@ -11,7 +11,7 @@ class Net(torch.nn.Module):
         self.conv1 = GCNConv(2, 8, cached=False)
         self.conv2 = GCNConv(8, 32, cached=False)
         self.conv3 = GCNConv(32, 128, cached=False)
-        self.linear = Linear(128, 5)
+        self.linear = Linear(128, 3)
 
     def forward(self, batch):
         x, edge_index, batch_index = batch.x, batch.edge_index, batch.batch
