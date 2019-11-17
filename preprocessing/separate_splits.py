@@ -32,7 +32,14 @@ if __name__ == '__main__':
     test_indices = load_indices(os.path.join(config.indices_folder, "test.txt"))
     train_indices = load_indices(os.path.join(config.indices_folder, "train.txt"))
     val_indices = load_indices(os.path.join(config.indices_folder, "val.txt"))
-    
+
+    test_set = set(test_indices)
+    train_set = set(train_indices)
+    val_set = set(val_indices)
+
+    test_length = len(test_indices)
+    train_length = len(train_indices) + len(val_indices)
+
     # Generate names for the new files
     basename, extension = os.path.splitext(os.path.basename(config.h5_file))
     test_filename = basename + "_test" + extension
@@ -42,59 +49,118 @@ if __name__ == '__main__':
 
     test_filepath = os.path.join(config.output_folder, test_filename)
     train_filepath = os.path.join(config.output_folder, train_filename)
-    
-    # Read in original file
-    with h5py.File(config.h5_file, 'r') as infile:
-        keys = list(infile.keys())
 
-        with h5py.File(test_filepath, 'w') as outfile:
-            length = len(test_indices)
-            for key in keys:
-                original_shape = infile[key].shape
-                original_dtype = infile[key].dtype
-                new_shape = (length, ) + original_shape[1:]
-
-                dataset = outfile.create_dataset(key, shape=new_shape, dtype=original_dtype)
-
-                sorted_indices = sorted(test_indices)
-                i = 0
-                while i < len(sorted_indices):
-                    end = max(len(sorted_indices), i+128)
-                    dataset[i:end] = infile[key][sorted_indices[i:end]]
-                    i = end
-
-        with h5py.File(train_filepath, 'w') as outfile:
-            length = len(train_indices) + len(val_indices)
-            for key in keys:
-                original_shape = infile[key].shape
-                original_dtype = infile[key].dtype
-                new_shape = (length, ) + original_shape[1:]
-
-                dataset = outfile.create_dataset(key, shape=new_shape, dtype=original_dtype)
-
-                sorted_indices = sorted(train_indices)
-                i = 0
-                while i < len(sorted_indices):
-                    end = max(len(sorted_indices), i+128)
-                    dataset[i:end] = infile[key][sorted_indices[i:end]]
-                    i = end
-
-
-                sorted_indices = sorted(val_indices)
-                i = 0
-                while i < len(sorted_indices):
-                    end = max(len(sorted_indices), i+128)
-                    dataset[i+len(train_indices):end+len(train_indices)] = infile[key][sorted_indices[i:end]]
-                    i = end   
+    print("Writing testing data to {}".format(test_filepath))
+    print("Writing training and validating data to {}".format(train_filepath))
 
     # Write new train and val indices for the new file
     splits_dir = os.path.join(config.output_folder, basename + "_splits")
     os.makedirs(splits_dir, exist_ok=True)
 
     print("Writing new indices to {}".format(splits_dir))
-    
+
+    new_train_indices = []
+    new_val_indices = []
+
+    # Read in original file
+    print("Initializating data")
+    with h5py.File(config.h5_file, 'r') as infile:
+        keys = list(infile.keys())
+
+        # Writing both file at the same time for sequential read
+        with h5py.File(test_filepath, 'w') as testfile:
+            with h5py.File(train_filepath, 'w') as trainfile:
+                for key in keys:
+                    if key == "root_files":
+                        continue
+                    print(key)
+                    # Get info for original data
+                    original_data = infile[key]
+                    original_shape = original_data.shape
+                    original_dtype = original_data.dtype
+
+                    zero = np.zeros(original_shape[1:], dtype=original_dtype)
+
+                    # Pre initialize test data to get offset
+                    print("\tinitializing test data")
+                    test_shape = (test_length,) + original_shape[1:]
+                    test_data = testfile.create_dataset(key, shape=test_shape,
+                                                        dtype=original_dtype)
+                    test_data[:] = zero
+
+                    # Pre initialize train data to get offset
+                    print("\tinitializing train data")
+                    train_shape = (train_length,) + original_shape[1:]
+                    train_data = trainfile.create_dataset(key, shape=train_shape,
+                                                        dtype=original_dtype)
+                    train_data[:] = zero
+
+    # Read in original file
+    print("Begin mem copy")
+    with h5py.File(config.h5_file, 'r') as infile:
+        keys = list(infile.keys())
+
+        # Writing both file at the same time for sequential read
+        with h5py.File(test_filepath, 'r') as testfile:
+            with h5py.File(train_filepath, 'r') as trainfile:
+                for key in keys:
+                    if key == "root_files":
+                        continue
+                    print(key)
+                    # Get info for original data
+                    original_data = infile[key]
+                    original_shape = original_data.shape
+                    original_dtype = original_data.dtype
+
+                    # Get info for test data
+                    test_data = testfile[key]
+                    test_shape = test_data.shape
+
+                    # Get info for train data
+                    train_data = trainfile[key]
+                    train_shape = train_data.shape
+
+                    # Get offsets
+                    original_offset = original_data.id.get_offset()
+                    test_offset = test_data.id.get_offset()
+                    train_offset = train_data.id.get_offset()
+
+                    print(original_offset)
+                    print(test_offset)
+                    print(train_offset)
+
+                    # Setup mem data
+                    original_mem_data = np.memmap(config.h5_file, mode='r', shape=original_shape,
+                                                    offset=original_offset, dtype=original_dtype)
+                    test_mem_data = np.memmap(test_filepath, mode='readwrite', shape=test_shape,
+                                                offset=test_offset, dtype=original_dtype)
+                    train_mem_data = np.memmap(train_filepath, mode='readwrite', shape=train_shape,
+                                                offset=train_offset, dtype=original_dtype)
+
+                    # Copy
+                    test_i = 0
+                    train_i = 0
+                    for i, data in enumerate(original_mem_data):
+                        if i in test_set:
+                            test_mem_data[test_i] = data
+                            test_i += 1
+                        else:
+                            train_mem_data[train_i] = data
+                            train_i += 1
+
+        train_i = 0
+        for i in range(infile[keys[0]].shape[0]):
+            if i in train_set:
+                new_train_indices.append[train_i]
+                train_i += 1
+            elif i in val_set:
+                new_val_indices.append[train_i]
+                train_i += 1
+
     with open(os.path.join(splits_dir, 'train.txt'), 'w') as f:
-        f.writelines(["{}\n".format(i) for i in range(len(train_indices))])
+        indices = np.random.permutation(new_train_indices)
+        f.writelines(["{}\n".format(i) for i in indices])
 
     with open(os.path.join(splits_dir, 'val.txt'), 'w') as f:
-        f.writelines(["{}\n".format(i) for i in range(len(train_indices), len(train_indices) + len(val_indices))])
+        indices = np.random.permutation(new_val_indices)
+        f.writelines(["{}\n".format(i) for i in indices])
