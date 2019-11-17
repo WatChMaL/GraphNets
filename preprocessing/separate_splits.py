@@ -46,9 +46,7 @@ if __name__ == '__main__':
     # Read in original file
     with h5py.File(config.h5_file, 'r') as infile:
         keys = list(infile.keys())
-    
-        # Write the test file
-        print("Writing testing data to {}".format(test_filepath))
+
         with h5py.File(test_filepath, 'w') as outfile:
             length = len(test_indices)
             for key in keys:
@@ -58,11 +56,13 @@ if __name__ == '__main__':
 
                 dataset = outfile.create_dataset(key, shape=new_shape, dtype=original_dtype)
 
-                for i,j in enumerate(test_indices):
-                    dataset[i] = infile[key][j]
+                sorted_indices = sorted(test_indices)
+                i = 0
+                while i < len(sorted_indices):
+                    end = max(len(sorted_indices), i+128)
+                    dataset[i:end] = infile[key][sorted_indices[i:end]]
+                    i = end
 
-        # Write the trainval file
-        print("Writing training and validating data to {}".format(train_filepath))
         with h5py.File(train_filepath, 'w') as outfile:
             length = len(train_indices) + len(val_indices)
             for key in keys:
@@ -72,11 +72,20 @@ if __name__ == '__main__':
 
                 dataset = outfile.create_dataset(key, shape=new_shape, dtype=original_dtype)
 
-                for i,j in enumerate(train_indices):
-                    dataset[i] = infile[key][j]
+                sorted_indices = sorted(train_indices)
+                i = 0
+                while i < len(sorted_indices):
+                    end = max(len(sorted_indices), i+128)
+                    dataset[i:end] = infile[key][sorted_indices[i:end]]
+                    i = end
 
-                for i, j in enumerate(val_indices):
-                    dataset[i+len(train_indices)] = infile[key][j]
+
+                sorted_indices = sorted(val_indices)
+                i = 0
+                while i < len(sorted_indices):
+                    end = max(len(sorted_indices), i+128)
+                    dataset[i+len(train_indices):end+len(train_indices)] = infile[key][sorted_indices[i:end]]
+                    i = end   
 
     # Write new train and val indices for the new file
     splits_dir = os.path.join(config.output_folder, basename + "_splits")
