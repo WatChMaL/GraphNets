@@ -151,10 +151,10 @@ if __name__ == '__main__':
         train_i = 0
         for i in range(infile[keys[0]].shape[0]):
             if i in train_set:
-                new_train_indices.append[train_i]
+                new_train_indices.append(train_i)
                 train_i += 1
             elif i in val_set:
-                new_val_indices.append[train_i]
+                new_val_indices.append(train_i)
                 train_i += 1
 
     with open(os.path.join(splits_dir, 'train.txt'), 'w') as f:
