@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-from models.gcn_kipf import Net
+from models.selector import Model
 from training_utils.engine_graph import EngineGraph
 
 from config.config_example import config
@@ -10,11 +10,11 @@ import os.path as osp
 
 if __name__ == '__main__':
     # Initialization
-    model = Net()
+    model = Model(name=config.model_name, **config.model_kwargs)
     engine = EngineGraph(model, config)
 
     # Training
-    # engine.train()
+    engine.train()
 
     # Validation
     engine.validate("validation", name="before_load")

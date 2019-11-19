@@ -4,7 +4,9 @@ from config.easy_dict import EasyDict
 
 config = EasyDict()
 
+## Model
 config.model_name = "gcn_kipf"
+config.model_kwargs = {}
 
 ## Data paths
 config.data_path = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval.h5"
