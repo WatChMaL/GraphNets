@@ -48,13 +48,14 @@ class Engine(ABC):
             self.model_accs=self.model.module
         else:
             self.model_accs=self.model
-  
+
         # Create the dataset object
-        out = get_loaders(config.data_path, 
-                      config.train_indices_file, config.val_indices_file, config.test_indices_file,   # Changed
+        out = get_loaders(config.data_path,
+                      config.train_indices_file, config.val_indices_file,
                       config.edge_index_pickle, config.batch_size, config.num_data_workers)
 
         self.train_loader, self.val_loader, self.dataset = out
+
         # Define the variant dependent attributes
         self.criterion=None
 
@@ -83,8 +84,8 @@ class Engine(ABC):
         self.optimizer.zero_grad()  # Reset gradient accumulation
         loss = self.criterion(predict, expected)
         loss.backward()# Propagate the loss backwards
-        self.optimizer.step()       # Update the optimizer parameters         
-        
+        self.optimizer.step()       # Update the optimizer parameters
+
         return loss
 
     @abstractmethod
@@ -92,17 +93,20 @@ class Engine(ABC):
         """Training loop over the entire dataset for a given number of epochs."""
         raise NotImplementedError
 
-    def save_state(self, mode="latest"):
+    def save_state(self, mode="latest", name=""):
         """Save the model parameters in a file.
-        
+
         Args :
         mode -- one of "latest", "best" to differentiate
                 the latest model from the model with the
                 lowest loss on the validation subset (default "latest")
         """
-        path=self.dirpath + self.config.model_name + "_" + mode + ".pth"
+        if name:
+            path=self.dirpath + self.config.model_name + "_" + mode + "_" + name + ".pth"
+        else:
+            path=self.dirpath + self.config.model_name + "_" + mode + ".pth"
 
-        # Extract modules from the model dict and add to start_dict 
+        # Extract modules from the model dict and add to start_dict
         modules=list(self.model_accs._modules.keys())
         state_dict={module: getattr(self.model_accs, module).state_dict() for module in modules}
 
@@ -111,7 +115,7 @@ class Engine(ABC):
 
     def load_state(self, path):
         """Load the model parameters from a file.
-        
+
         Args :
         path -- absolute path to the .pth file containing the dictionary
         with the model parameters to load from
@@ -129,5 +133,5 @@ class Engine(ABC):
                 if module in local_module_keys:
                     print("Loading weights for module = ", module)
                     getattr(self.model_accs, module).load_state_dict(checkpoint[module])
-                    
+
         self.model.to(self.device)

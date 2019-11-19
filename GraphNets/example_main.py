@@ -12,24 +12,24 @@ if __name__ == '__main__':
     # Initialization
     model = Net()
     engine = EngineGraph(model, config)
-    
+
     # Training
-    engine.train()
-    
+    # engine.train()
+
     # Validation
-    engine.validate("test")
+    engine.validate("validation", name="before_load")
 
     # Save network
     engine.save_state()
     print(model.conv1.weight)
 
     # Reset network
-    model.conv1.weight = torch.nn.Parameter(torch.Tensor(np.random.rand(2,16)))
+    model.conv1.weight = torch.nn.Parameter(torch.Tensor(np.random.random(model.conv1.weight.shape)))
     print(model.conv1.weight)
 
     # Load network
     engine.load_state(osp.join(engine.dirpath, config.model_name + "_latest.pth"))
     print(model.conv1.weight)
-    
+
     # Check load successful
-    engine.validate("test")
+    engine.validate("validation", name="after_load")

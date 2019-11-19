@@ -6,23 +6,31 @@ config = EasyDict()
 
 config.model_name = "gcn_kipf"
 
-config.data_path = "../metadata/IWCDmPMT_4pi_full_tank_test.h5"
-config.train_indices_file = "../metadata/train_indicies.txt"
-config.val_indices_file = "../metadata/validation_indicies.txt"
-config.test_indices_file = "../metadata/test_indicies.txt"
-config.edge_index_pickle = "../metadata/edges_dict.pkl"
+## Data paths
+config.data_path = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval.h5"
+config.train_indices_file = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_splits/train.txt"
+config.val_indices_file = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_splits/val.txt"
+config.edge_index_pickle = "/app/GraphNets/metadata/edges_dict.pkl"
 
-config.dump_path = "../dump/gcn"
+## Log location
+config.dump_path = "/app/GraphNets/dump/gcn"
 
+## Computer Parameters
 config.num_data_workers = 0 # Sometime crashes if we do multiprocessing
 config.device = 'gpu'
 config.gpu_list = [0]
 
+## Training parameters
 config.batch_size = 32
 config.lr=0.01
 config.weight_decay=5e-4
+config.epochs = 1
 
-config.epochs = 10
-config.report_interval = 50
+## Logging parameters for training
+config.report_interval = 10 # 100
 config.num_val_batches  = 32
-config.valid_interval   = 500
+config.valid_interval   = 100 # 10000
+
+## Validating parameters
+config.validate_batch_size = 32
+config.validate_dump_interval = 256
