@@ -1,4 +1,4 @@
-# for commit 98f1b36b60e1be2891f34e09
+# for commit fb3bf69912f1abe99f219c2b
 
 from config.easy_dict import EasyDict
 
@@ -6,7 +6,7 @@ config = EasyDict()
 
 ## Model
 config.model_name = "gcn_kipf"
-config.model_kwargs = {}
+config.model_kwargs = {"w1":4, "w2":8, "w3":16}
 
 ## Data paths
 config.data_path = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval.h5"
