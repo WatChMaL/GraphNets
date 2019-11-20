@@ -1,9 +1,10 @@
 ## Reference
 # SEMI-SUPERVISED CLASSIFICATION WITH GRAPH CONVOLUTIONAL NETWORKS
-# https://arxiv.org/pdf/1609.02907.pdf
+#  https://arxiv.org/pdf/1609.02907.pdf
 # With Addition
 #   Add Global Pooling
 #   Add linear predictor
+
 
 import torch
 from torch.nn import Linear
