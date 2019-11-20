@@ -10,8 +10,7 @@ config.model_kwargs = {}
 
 ## Data paths
 config.data_path = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval.h5"
-config.train_indices_file = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_splits/train.txt"
-config.val_indices_file = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_splits/val.txt"
+config.indices_file = "/app/test_data/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval_idxs.npz"
 config.edge_index_pickle = "/app/GraphNets/metadata/edges_dict.pkl"
 
 ## Log location

@@ -12,8 +12,8 @@ def parse_args():
                         type=str,
                         help="Path to h5_file,\
                         must contain 'event_data'")
-    parser.add_argument('output_folder', type=str,
-                        help="Path to output folder.")
+    parser.add_argument('output_file', type=str,
+                        help="Path to output file")
     parser.add_argument('--val_split', type=float, default=0.1)
     parser.add_argument('--test_split', type=float, default=0.1)
     args = parser.parse_args()
@@ -34,11 +34,6 @@ if __name__ == '__main__':
     val_end = np.ceil(lines * config.val_split).astype(np.int)
     test_end = val_end + np.ceil(lines * config.test_split).astype(np.int)
 
-    os.makedirs(config.output_folder, exist_ok=True)
+    np.savez(config.output_file, train_idxs=indices[test_end:],
+            val_idxs=indices[:val_end], test_idxs=indices[val_end:test_end])
 
-    with open(os.path.join(config.output_folder, 'val.txt'), 'w') as f:
-        f.writelines(["{}\n".format(i) for i in indices[:val_end]])
-    with open(os.path.join(config.output_folder, 'test.txt'), 'w') as f:
-        f.writelines(["{}\n".format(i) for i in indices[val_end:test_end]])
-    with open(os.path.join(config.output_folder, 'train.txt'), 'w') as f:
-        f.writelines(["{}\n".format(i) for i in indices[test_end:]])

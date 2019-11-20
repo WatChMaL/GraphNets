@@ -50,8 +50,7 @@ class Engine(ABC):
             self.model_accs=self.model
 
         # Create the dataset object
-        out = get_loaders(config.data_path,
-                      config.train_indices_file, config.val_indices_file,
+        out = get_loaders(config.data_path, config.indices_file,
                       config.edge_index_pickle, config.batch_size, config.num_data_workers)
 
         self.train_loader, self.val_loader, self.dataset = out

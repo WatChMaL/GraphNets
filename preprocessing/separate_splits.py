@@ -14,24 +14,19 @@ def parse_args():
                         must contain 'event_data'")
     parser.add_argument('output_folder', type=str,
                         help="Path to output folder.")
-    parser.add_argument('indices_folder', type=str, help="Path to indices folder")
+    parser.add_argument('indices_file', type=str, help="Path to indices file")
     args = parser.parse_args()
     return args
-
-def load_indices(indices_file):
-    with open(indices_file, 'r') as f:
-        lines = f.readlines()
-    indices = [int(l.strip()) for l in lines]
-    return indices
 
 if __name__ == '__main__':
     # Parse Arguments
     config = parse_args()
 
     # Load indices to split upon
-    test_indices = load_indices(os.path.join(config.indices_folder, "test.txt"))
-    train_indices = load_indices(os.path.join(config.indices_folder, "train.txt"))
-    val_indices = load_indices(os.path.join(config.indices_folder, "val.txt"))
+    all_indices = np.load(config.indices_file)
+    test_indices = all_indices['test_idxs']
+    train_indices = all_indices['train_idxs']
+    val_indices = all_indices['val_idxs']
 
     test_set = set(test_indices)
     train_set = set(train_indices)
@@ -54,10 +49,9 @@ if __name__ == '__main__':
     print("Writing training and validating data to {}".format(train_filepath))
 
     # Write new train and val indices for the new file
-    splits_dir = os.path.join(config.output_folder, basename + "_splits")
-    os.makedirs(splits_dir, exist_ok=True)
+    splits_file = os.path.join(config.output_folder, basename + "_trainval_idxs")
 
-    print("Writing new indices to {}".format(splits_dir))
+    print("Writing new indices to {}".format(splits_file))
 
     new_train_indices = []
     new_val_indices = []
@@ -157,10 +151,7 @@ if __name__ == '__main__':
                 new_val_indices.append(train_i)
                 train_i += 1
 
-    with open(os.path.join(splits_dir, 'train.txt'), 'w') as f:
-        indices = np.random.permutation(new_train_indices)
-        f.writelines(["{}\n".format(i) for i in indices])
+    new_train_indices = np.random.permutation(new_train_indices)
+    new_val_indices = np.random.permutation(new_val_indices)
 
-    with open(os.path.join(splits_dir, 'val.txt'), 'w') as f:
-        indices = np.random.permutation(new_val_indices)
-        f.writelines(["{}\n".format(i) for i in indices])
+    np.savez(split_file, train_idxs=new_train_indices, val_idxs=new_test_indices)
