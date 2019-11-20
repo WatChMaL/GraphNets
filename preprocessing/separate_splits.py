@@ -138,7 +138,7 @@ if __name__ == '__main__':
                         if i in test_set:
                             test_mem_data[test_i] = data
                             test_i += 1
-                        else:
+                        elif i in val_set or i in train_set:
                             train_mem_data[train_i] = data
                             train_i += 1
 
