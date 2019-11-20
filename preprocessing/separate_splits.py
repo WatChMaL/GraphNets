@@ -154,4 +154,4 @@ if __name__ == '__main__':
     new_train_indices = np.random.permutation(new_train_indices)
     new_val_indices = np.random.permutation(new_val_indices)
 
-    np.savez(split_file, train_idxs=new_train_indices, val_idxs=new_test_indices)
+    np.savez(splits_file, train_idxs=new_train_indices, val_idxs=new_val_indices)
