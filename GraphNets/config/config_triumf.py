@@ -8,10 +8,10 @@ config.model_name = "gcn_kipf"
 config.model_kwargs = {}
 
 config.data_path = "/data/WatChMaL/data/IWCDmPMT_4pi_fulltank_test/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval.h5"
-config.indices_file = "/data/WatChMaL/data/IWCDmPMT_4pi_fulltank_test/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval_idxs.txt"
-config.edge_index_pickle = "/home/jpeng/GraphNets/visualization/edges_dict.pkl"
+config.indices_file = "/data/WatChMaL/data/IWCDmPMT_4pi_fulltank_test/split_h5/IWCDmPMT_4pi_fulltank_test_graphnet_trainval_idxs.npz"
+config.edge_index_pickle = "/home/dylanlu/GraphNets/visualization/edges_dict.pkl"
 
-config.dump_path = "/home/jpeng/GraphNets/dump/gcn"
+config.dump_path = "/home/dylanlu/GraphNets/dump/gcn"
 
 config.num_data_workers = 0 # Sometime crashes if we do multiprocessing
 config.device = 'gpu'
