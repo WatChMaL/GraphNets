@@ -3,12 +3,12 @@
 #SBATCH --gres=gpu:1              # Number of GPUs (per node)
 #SBATCH --cpus-per-task=4         # NUmber of CPU cores/thread
 #SBATCH --mem=16000M              # Memory (per node)
-#SBATCH --time=3-00:00            # time (DD-HH:MM)
+#SBATCH --time=1-00:00            # time (DD-HH:MM)
 
 #SBATCH --account=def-pdeperio
 
-#SBATCH --output=log-train-%u-%j.txt
-#SBATCH --error=error-train-%u-%j.txt
+#SBATCH --output=log-validate-%u-%j.txt
+#SBATCH --error=error-validate-%u-%j.txt
 
 ## Make sure the following environmental variables are set
 # SINGULARITY_IMAGE
@@ -32,7 +32,7 @@ rsync -r $DATA_DIR $SLURM_TMPDIR
 date
 echo "Start running job"
 
-singularity exec --nv -B $SLURM_TMPDIR:/fast_scratch -B $PROJECT_DIR:/project_dir $SINGULARITY_IMAGE python $PROJECT_DIR/GraphNets/validate.py
+singularity exec --nv -B $SLURM_TMPDIR:/fast_scratch -B $PROJECT_DIR:/project_dir $SINGULARITY_IMAGE python /project_dir/GraphNets/validate.py
 
 date
 echo "Job Done"
