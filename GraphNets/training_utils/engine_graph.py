@@ -119,7 +119,7 @@ class EngineGraph(Engine):
                     val_acc /= num_val_batches
 
                     # Record the validation stats to the csv
-                    self.val_log.record(self.keys, [iteration, epoch, loss, acc])
+                    self.val_log.record(self.keys, [iteration, epoch, val_loss, val_acc])
                     self.val_log.write()
 
                     # Save the best model
