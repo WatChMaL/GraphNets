@@ -1,4 +1,4 @@
-# for commit 886417eafdfba8aac1a1
+# for commit 3277f51e257c94e2ce98545bfd5115b29
 
 from config.easy_dict import EasyDict
 
@@ -17,10 +17,10 @@ config.num_data_workers = 0 # Sometime crashes if we do multiprocessing
 config.device = 'gpu'
 config.gpu_list = [0]
 
+config.optimizer = "Adam"
+config.optimizer_kwargs = {"lr":0.01, "weight_decay":5e-4}
+
 config.batch_size = 64
-config.validate_batch_size = 64
-config.lr=0.01
-config.weight_decay=5e-4
 config.epochs = 10
 
 config.report_interval = 50
