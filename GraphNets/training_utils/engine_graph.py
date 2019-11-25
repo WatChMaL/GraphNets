@@ -8,7 +8,6 @@ import os
 # PyTorch imports
 import torch
 import torch.nn.functional as F
-from torch.optim import Adam
 
 # PyTorch Geometric imports
 from torch_geometric.data import DataLoader
@@ -16,6 +15,7 @@ from torch_geometric.data import DataLoader
 # Custom imports
 from io_util.sampler import SubsetSequentialSampler
 from training_utils.engine import Engine
+from training_utils.optimizer import select_optimizer
 from training_utils.logger import CSVData
 
 class EngineGraph(Engine):
@@ -23,8 +23,8 @@ class EngineGraph(Engine):
     def __init__(self, model, config):
         super().__init__(model, config)
         self.criterion=F.nll_loss
-        self.optimizer=Adam(self.model_accs.parameters(), lr=config.lr)
-
+        self.optimizer=select_optimizer(config.optimizer, self.model_accs.parameters(),
+                        **config.optimizer_kwargs)
         self.keys = ['iteration', 'epoch', 'loss', 'acc']
 
     def forward(self, data, mode="train"):

@@ -17,9 +17,10 @@ config.num_data_workers = 0 # Sometime crashes if we do multiprocessing
 config.device = 'gpu'
 config.gpu_list = [0]
 
+config.optimizer = "Adam"
+config.optimizer_kwargs = {"lr":0.01, "weight_decay":5e-4}
+
 config.batch_size = 64
-config.lr=0.01
-config.weight_decay=5e-4
 config.epochs = 10
 
 config.report_interval = 50
