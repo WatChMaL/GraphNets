@@ -2,6 +2,7 @@
 from models.gcn_kipf import Net as gcn_kipf
 from models.gcn_relu import Net as gcn_relu
 from models.gcn_batch_reg import Net as gcn_batch_reg
+from models.gcn_batch_topk import Net as gcn_batch_topk
 from models.gcn_topk import Net as gcn_topk
 
 def Model(name="gcn_kipf", **kwargs):
@@ -11,6 +12,8 @@ def Model(name="gcn_kipf", **kwargs):
         return gcn_relu(**kwargs)
     elif name == "gcn_batch_reg":
         return gcn_batch_reg(**kwargs)
+    elif name == "gcn_batch_topk":
+        return gcn_batch_topk(**kwargs)
     elif name == "gcn_topk":
         return gcn_topk(**kwargs)
     else:
