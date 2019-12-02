@@ -60,7 +60,7 @@ class Net(torch.nn.Module):
             x = bn(x)
 
         x = global_max_pool(x, batch_index)
-
+        x = F.dropout(x, training=self.training)
         for lin in self.lins:
             x = lin(x)
 
