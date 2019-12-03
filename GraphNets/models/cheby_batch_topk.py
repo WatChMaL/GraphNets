@@ -3,6 +3,7 @@
 # SEMI-SUPERVISED CLASSIFICATION WITH GRAPH CONVOLUTIONAL NETWORKS
 # https://arxiv.org/pdf/1609.02907.pdf
 # With modification
+#   Use Chebyshev Convolution instead of Graph convolution by kipf
 #   Use TopK to remove non activated nodes to save memory
 #   Replace Dropout with Batch Normalization
 #   Add Global Max Pooling
