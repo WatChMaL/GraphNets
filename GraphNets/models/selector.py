@@ -6,6 +6,8 @@ from models.gcn_batch_topk import Net as gcn_batch_topk
 from models.gcn_batch_topk_2 import Net as gcn_batch_topk_2
 from models.gcn_deeper import Net as gcn_deeper
 from models.cheby_batch_topk import Net as cheby_batch_topk
+from models.tag_batch_topk import Net as tag_batch_topk
+from models.sg_batch_topk import Net as sg_batch_topk
 from models.graph_topk import Net as graph_topk
 
 def Model(name="gcn_kipf", **kwargs):
@@ -23,6 +25,10 @@ def Model(name="gcn_kipf", **kwargs):
         return gcn_deeper(**kwargs)
     elif name == "cheby_batch_topk":
         return cheby_batch_topk(**kwargs)
+    elif name == "tag_batch_topk":
+        return tag_batch_topk(**kwargs)
+    elif name == "sg_batch_topk":
+        return sg_batch_topk(**kwargs)
     elif name == "graph_topk":
         return graph_topk(**kwargs)
     else:
