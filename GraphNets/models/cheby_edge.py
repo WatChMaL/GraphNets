@@ -4,10 +4,13 @@
 # https://arxiv.org/pdf/1609.02907.pdf
 # Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering
 # https://arxiv.org/pdf/1606.09375.pdf
+# Towards Graph Pooling by Edge Contraction
+# https://graphreason.github.io/papers/17.pdf
 # With modification
 #   Use Chebyshev Convolution instead of Graph convolution by kipf
 #   Use TopK to remove non activated nodes to save memory
 #   Replace Dropout with Batch Normalization
+#   Add edge pooling to shrink graph
 #   Add Global Max Pooling
 #   Add linear predictor
 
@@ -17,7 +20,7 @@ from torch.nn import Linear, BatchNorm1d
 import torch.nn.functional as F
 
 from torch_geometric.nn import ChebConv
-from torch_geometric.nn import global_max_pool #, TopKPooling
+from torch_geometric.nn import global_max_pool, EdgePooling
 
 from custom_layers.topk_pool import TopKPooling
 from custom_layers.gcn_conv import GCNConv as CustomGCN
@@ -35,10 +38,15 @@ class Net(torch.nn.Module):
 
         self.conv1 = ChebConv(2, w1, k)
         self.bn1 = BatchNorm1d(w1)
+        self.pool1 = EdgePooling(w1)
+
         self.conv2 = ChebConv(w1, w2, k)
         self.bn2 = BatchNorm1d(w2)
+        self.pool2 = EdgePooling(w2)
+
         self.conv3 = ChebConv(w2, w3, k)
         self.bn3 = BatchNorm1d(w3)
+
         self.linear = Linear(w3, 3)
 
 
@@ -51,8 +59,12 @@ class Net(torch.nn.Module):
 
         x = F.relu(self.conv1(x, edge_index))
         x = self.bn1(x)
+        x, edge_index, batch_index, _ = self.pool1(x, edge_index, batch_index)
+
         x = F.relu(self.conv2(x, edge_index))
         x = self.bn2(x)
+        x, edge_index, batch_index, _ = self.pool2(x, edge_index, batch_index)
+
         x = F.relu(self.conv3(x, edge_index))
         x = self.bn3(x)
 
