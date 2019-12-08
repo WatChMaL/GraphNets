@@ -1,7 +1,3 @@
-#from models.selector import Model
-#from config.config_triumf import config
-#from training_utils.engine_graph import EngineGraph
-
 import os
 import os.path as osp
 
@@ -26,9 +22,9 @@ def find_top_models(dump_path, n):
             if models[f] > max_score:
                 max_score = models[f]
                 max_f = f
-        del models[f]
+        del models[max_f]
     return list(sorted(models, key=models.get))
-	
+
 if __name__ == '__main__':
     #model = Model(name=config.model_name, **config.model_kwargs)
     #engine = EngineGraph(model, config)
