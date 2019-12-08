@@ -8,7 +8,7 @@ import os
 # PyTorch imports
 import torch
 import torch.nn.functional as F
-
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 # PyTorch Geometric imports
 from torch_geometric.data import DataLoader
 
@@ -25,6 +25,7 @@ class EngineGraph(Engine):
         self.criterion=F.nll_loss
         self.optimizer=select_optimizer(config.optimizer, self.model_accs.parameters(),
                         **config.optimizer_kwargs)
+        self.scheduler = ReduceLROnPlateau(self.optimizer, **config.scheduler_kwargs)
         self.keys = ['iteration', 'epoch', 'loss', 'acc']
 
     def forward(self, data, mode="train"):
@@ -52,6 +53,7 @@ class EngineGraph(Engine):
         report_interval = self.config.report_interval
         valid_interval  = self.config.valid_interval
         num_val_batches = self.config.num_val_batches
+        scheduler_step  = self.config.scheduler_step
 
         # Initialize counters
         epoch=0.
@@ -60,6 +62,7 @@ class EngineGraph(Engine):
         # Parameter to upadte when saving the best model
         best_val_loss=1000000.
         avg_val_loss=1000.
+        next_scheduler = scheduler_step
 
         val_iter = iter(self.val_loader)
 
@@ -117,6 +120,10 @@ class EngineGraph(Engine):
 
                     val_loss /= num_val_batches
                     val_acc /= num_val_batches
+                    if iteration > next_scheduler:
+                        self.scheduler.step(val_loss)
+                        next_scheduler += scheduler_step
+
 
                     # Record the validation stats to the csv
                     self.val_log.record(self.keys, [iteration, epoch, val_loss, val_acc])
