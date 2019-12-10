@@ -3,7 +3,7 @@
 #SBATCH --gres=gpu:1              # Number of GPUs (per node)
 #SBATCH --cpus-per-task=4         # NUmber of CPU cores/thread
 #SBATCH --mem=16000M              # Memory (per node)
-#SBATCH --time=2-00:00            # time (DD-HH:MM)
+#SBATCH --time=5-00:00            # time (DD-HH:MM)
 
 #SBATCH --account=def-pdeperio
 

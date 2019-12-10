@@ -3,7 +3,7 @@
 #SBATCH --gres=gpu:1              # Number of GPUs (per node)
 #SBATCH --cpus-per-task=4         # NUmber of CPU cores/thread
 #SBATCH --mem=16000M              # Memory (per node)
-#SBATCH --time=1-00:00            # time (DD-HH:MM)
+#SBATCH --time=2-00:00            # time (DD-HH:MM)
 
 #SBATCH --account=def-pdeperio
 
@@ -32,7 +32,7 @@ rsync -r $DATA_DIR $SLURM_TMPDIR
 date
 echo "Start running job"
 
-singularity exec --nv -B $SLURM_TMPDIR:/fast_scratch -B $PROJECT_DIR:/project_dir $SINGULARITY_IMAGE python /project_dir/GraphNets/validate.py
+singularity exec --nv -B $SLURM_TMPDIR:/fast_scratch -B $PROJECT_DIR:/project_dir $SINGULARITY_IMAGE python /project_dir/GraphNets/validate_custom.py
 
 date
 echo "Job Done"
