@@ -6,7 +6,7 @@ def find_top_models(dump_path, n):
     models = {}
     files = os.listdir(dump_path)
     for f in files:
-        if f.endswith('.pth') and 'best' in f:
+        if osp.isfile(osp.join(dump_path, f)) and f.endswith('.pth') and 'best' in f:
             score_pth = f.split('_')[-1].split('.')
             if len(score_pth) == 3:
                 score = float(score_pth[0] + '.' + score_pth[1])
@@ -28,5 +28,5 @@ def find_top_models(dump_path, n):
 if __name__ == '__main__':
     #model = Model(name=config.model_name, **config.model_kwargs)
     #engine = EngineGraph(model, config)
-    models = find_top_models("/home/dylanlu/GraphNets/dump/gcn20191122_003309", 5)
+    models = find_top_models("/project/rpp-tanaka-ab/wollip/GraphNets/dump/cheby_batch_topk20191202_194531", 5)
     print(models)

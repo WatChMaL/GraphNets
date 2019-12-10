@@ -156,11 +156,11 @@ class EngineGraph(Engine):
         # Setup the path to save output
         # Setup indices to use
         if subset == "train":
-            self.log=CSVData(self.dirpath + "train_validation_log_{}.csv".format(name))
+            self.log=CSVData(os.path.join(self.dirpath,"train_validation_log_{}.csv".format(name)))
             output_path=os.path.join(self.dirpath, "train_validation_{}".format(name))
             validate_indices = self.dataset.train_indices
         else:
-            self.log=CSVData(self.dirpath + "valid_validation_log_{}.csv".format(name))
+            self.log=CSVData(os.path.join(self.dirpath,"valid_validation_log_{}.csv".format(name)))
             output_path=os.path.join(self.dirpath, "valid_validation_{}".format(name))
             validate_indices = self.dataset.val_indices
 
