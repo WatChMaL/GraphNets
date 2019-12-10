@@ -13,15 +13,15 @@ if __name__ == '__main__':
     # Initialization
     model = Model(name=config.model_name, **config.model_kwargs)
     engine = EngineGraph(model, config)
-    
+
     # Training
     engine.train()
-    
+
     # Save network
     engine.save_state()
-    
-    #Validation    
+
+    #Validation
     models = find_top_models(engine.dirpath, 5)
     for model in models:
         engine.load_state(osp.join(engine.dirpath, model))
-        engine.validate("validation", name=model)
+        engine.validate("validation", name=osp.splitext(model)[0])
