@@ -61,7 +61,6 @@ class WCH5Dataset(Dataset):
 
             for k,vs in edges.items():
                 for v in vs:
-                    print(k,v)
                     edge_index[k,v] = 1
 
         self.edge_index=edge_index.to_sparse()._indices()
