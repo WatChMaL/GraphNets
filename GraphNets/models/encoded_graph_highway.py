@@ -17,11 +17,11 @@ import torch
 from torch.nn import Linear, BatchNorm1d
 import torch.nn.functional as F
 
-from torch_geometric.nn import ChebConv
+from torch_geometric.nn import GraphConv
 from torch_geometric.nn import global_max_pool as gmp, global_mean_pool as gap#, TopKPooling
 
 class Net(torch.nn.Module):
-    def __init__(self, k=3, layers=7, graph_w=128, concat_layers=[3,5,7], lin_ws=[32,8]):
+    def __init__(self, layers=7, graph_w=128, concat_layers=[3,5,7], lin_ws=[32,8]):
         super(Net, self).__init__()
 
         self.concat_layers = concat_layers
@@ -35,7 +35,7 @@ class Net(torch.nn.Module):
         self.convs = []
         self.bns = []
         for i in range(layers):
-            setattr(self, "conv{}".format(i), ChebConv(prev_w, graph_w, k))
+            setattr(self, "conv{}".format(i), GraphConv(prev_w, graph_w))
             setattr(self, "bn{}".format(i), BatchNorm1d(graph_w))
             self.convs.append(getattr(self, "conv{}".format(i)))
             self.bns.append(getattr(self, "bn{}".format(i)))

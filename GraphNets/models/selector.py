@@ -16,8 +16,9 @@ from models.tag_highway import Net as tag_highway
 from models.sg_batch_topk import Net as sg_batch_topk
 
 from models.graph_topk import Net as graph_topk
-
+# Pre Encoder networks
 from models.encoded_cheby_highway import Net as encoded_cheby_highway
+from models.encoded_graph_highway import Net as encoded_graph_highway
 
 def Model(name="gcn_kipf", **kwargs):
     if name == "gcn_kipf":
@@ -48,6 +49,8 @@ def Model(name="gcn_kipf", **kwargs):
         return graph_topk(**kwargs)
     elif name == "encoded_cheby_highway":
         return encoded_cheby_highway(**kwargs)
+    elif name == "encoded_graph_highway":
+        return encoded_graph_highway(**kwargs)
     else:
         print("Model {} not found".format(name))
         return None
