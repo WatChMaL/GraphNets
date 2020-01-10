@@ -8,7 +8,7 @@ from torch import device, load, save
 from torch.nn import DataParallel
 from torch.cuda import is_available
 
-from io_util.data_handler import get_loaders
+from io_util.data_handler import get_loaders, get_loaders_encoded
 from training_utils.logger import CSVData
 
 class Engine(ABC):
@@ -50,8 +50,12 @@ class Engine(ABC):
             self.model_accs=self.model
 
         # Create the dataset object
-        out = get_loaders(config.data_path, config.indices_file,
-                      config.edge_index_pickle, config.batch_size, config.num_data_workers)
+        if config.use_encoded_data:
+            out = get_loaders_encoded(config.data_path, config.indices_file,
+                          config.edge_index_pickle, config.batch_size, config.num_data_workers)
+        else:
+            out = get_loaders(config.data_path, config.indices_file,
+                          config.edge_index_pickle, config.batch_size, config.num_data_workers)
 
         self.train_loader, self.val_loader, self.dataset = out
 

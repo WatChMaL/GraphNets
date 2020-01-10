@@ -5,6 +5,7 @@ from torch_geometric.data import DataLoader
 import numpy as np
 
 from io_util.dataset import WCH5Dataset
+from io_util.transform import transform_reshape
 
 class WCH5Dataset_trainval(WCH5Dataset):
     """
@@ -40,4 +41,16 @@ def get_loaders(path, indices_file, edges_dict_pickle, batch_size, workers):
     val_loader=DataLoader(dataset, batch_size=batch_size, num_workers=workers,
                             pin_memory=True, sampler=SubsetRandomSampler(dataset.val_indices))
 
+    return train_loader, val_loader, dataset
+
+
+def get_loaders_encoded(path, indices_file, edges_dict_pickle, batch_size, workers):
+    
+    dataset = WCH5Dataset_trainval(path, indices_file, edges_dict_pickle,
+                                nodes=832, transform=transform_reshape((832,38)))
+    train_loader=DataLoader(dataset, batch_size=batch_size, num_workers=workers,
+                            pin_memory=True, sampler=SubsetRandomSampler(dataset.train_indices))
+
+    val_loader=DataLoader(dataset, batch_size=batch_size, num_workers=workers,
+                            pin_memory=True, sampler=SubsetRandomSampler(dataset.val_indices))
     return train_loader, val_loader, dataset

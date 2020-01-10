@@ -92,7 +92,6 @@ class EngineGraph(Engine):
                 # Record the metrics for the mini-batch in the log
                 self.train_log.record(self.keys, [iteration, epoch, loss, acc])
                 self.train_log.write()
-
                 # Print the metrics at report_intervals
                 if iteration % report_interval == 0:
                     print("... Iteration %d ... Epoch %1.2f ... Loss %1.3f ... Acc %1.3f"

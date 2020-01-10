@@ -61,6 +61,7 @@ class WCH5Dataset(Dataset):
 
             for k,vs in edges.items():
                 for v in vs:
+                    print(k,v)
                     edge_index[k,v] = 1
 
         self.edge_index=edge_index.to_sparse()._indices()
@@ -68,6 +69,9 @@ class WCH5Dataset(Dataset):
     def get(self, idx):
         x = torch.from_numpy(self.event_data[idx])
         y = torch.tensor([self.labels[idx]], dtype=torch.int64)
+
+        #if self.transform:
+        #    x = self.transform(x)
 
         return Data(x=x, y=y, edge_index=self.edge_index)
 

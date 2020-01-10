@@ -5,7 +5,7 @@ from config.easy_dict import EasyDict
 config = EasyDict()
 
 config.model_name = "cheby_batch_topk"
-config.model_kwargs = {"w1":128,"w2":128,"w3":128,'k':3}
+config.model_kwargs = {"layers":3,"graph_w":128,"lin_ws":[32,8],'k':3}
 
 config.data_path = "/fast_scratch/IWCDmPMT_4pi_fulltank_9M_graphnet_trainval.h5"
 config.indices_file = "/fast_scratch/IWCDmPMT_4pi_fulltank_9M_graphnet_trainval_idxs.npz"
